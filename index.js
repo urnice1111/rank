@@ -51,6 +51,18 @@ app.get("/health", async (req, res) => {
   }
 });
 
+app.get("/top", async (req, res) => {
+  try {
+    const top = await sql`select * from persons
+              order by score desc
+              limit 1;`;
+    res.json(top);
+  } catch (err){
+    console.error(err);
+    res.status(503).json({ "error": err });
+  }
+});
+
 // List professors (the rows inserted by the Python script), best rated first
 app.get("/personas", async (req, res) => {
   try {
