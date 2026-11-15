@@ -96,6 +96,26 @@ app.get("/match", async (req, res) => {
   }
 });
 
+app.post("/report", async (req, res) => {
+  const professorID = req.body.professorID;
+  console.log(professorID)
+  if (!UUID_RE.test(professorID || "")){
+    return res.status(400).json({error : "professorid must be a valid id"});
+  }
+  try {
+    const result = await sql`
+      UPDATE persons SET report_count = report_count + 1 WHERE id = ${professorID};
+    `
+    res.status(200).json({"ok" : true})
+
+
+
+  } catch (err){
+    console.error(err);
+    res.status(500).json({ error: "Failed to report ", message : err });
+  }
+});
+
 // Record a result: body { "winnerId": "<uuid>", "loserId": "<uuid>" }
 app.post("/vote", async (req, res) => {
   const { winnerId, loserId } = req.body || {};
