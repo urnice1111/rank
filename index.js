@@ -35,10 +35,12 @@ function eloUpdate(winnerRating, loserRating, k = K_FACTOR) {
 }
 
 // Request logger
-app.use((req, res, next) => {
-  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
-  next();
-});
+  app.use((req, res, next) => {
+     res.on("finish", () => {
+       console.log(`${new Date().toISOString()} - ${req.ip} - ${req.method} ${req.url} - ${res.statusCode}`);
+     });
+     next();
+   });
 
 // Health check
 app.get("/health", async (req, res) => {
